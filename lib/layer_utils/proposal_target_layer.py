@@ -150,6 +150,13 @@ def _sample_rois(all_rois, all_scores, gt_boxes, fg_rois_per_image,
                 replace=to_replace)).long().to(gt_boxes.device)]
         fg_rois_per_image = 0
     else:
+        # to_replace = all_rois.size(0) < rois_per_image
+        # bg_inds = torch.from_numpy(
+        #     npr.choice(
+        #         np.arange(0, all_rois.size(0)), 
+        #         size=int(rois_per_image), 
+        #         replace=to_replace)).long().to(gt_boxes.device)
+        # fg_rois_per_image = 0
         import pdb
         pdb.set_trace()
 

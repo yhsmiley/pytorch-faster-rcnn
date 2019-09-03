@@ -12,6 +12,7 @@ from __future__ import print_function
 __sets = {}
 from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
+from datasets.aic import aic
 
 import numpy as np
 
@@ -37,6 +38,15 @@ for year in ['2015']:
     for split in ['test', 'test-dev']:
         name = 'coco_{}_{}'.format(year, split)
         __sets[name] = (lambda split=split, year=year: coco(split, year))
+
+# Set up aic_<split>
+for split in ['train', 'val', 'trainval', 'test']:
+    name = 'aic_{}'.format(split)
+    __sets[name] = (lambda split=split: aic(split))
+
+for split in ['train', 'val', 'trainval', 'test']:
+    name = 'aic_{}_diff'.format(split)
+    __sets[name] = (lambda split=split: aic(split, use_diff=True))
 
 
 def get_imdb(name):

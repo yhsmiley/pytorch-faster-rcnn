@@ -133,6 +133,9 @@ def test_net(net, imdb, weights_filename, max_per_image=100, thresh=0.):
                  for _ in range(imdb.num_classes)]
 
     output_dir = get_output_dir(imdb, weights_filename)
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
     # timers
     _t = {'im_detect': Timer(), 'misc': Timer()}
 
@@ -174,7 +177,7 @@ def test_net(net, imdb, weights_filename, max_per_image=100, thresh=0.):
                 _t['misc'].average_time()))
 
     det_file = os.path.join(output_dir, 'detections.pkl')
-    with open(det_file, 'wb') as f:
+    with open(det_file, 'wb+') as f:
         pickle.dump(all_boxes, f, pickle.HIGHEST_PROTOCOL)
 
     print('Evaluating detections')
