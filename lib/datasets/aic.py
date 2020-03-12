@@ -82,8 +82,7 @@ class aic(imdb):
     """
         # Example path to image set file:
         # self._data_path + /ImageSets/Main/val.txt
-        image_set_file = os.path.join(self._data_path, 'ImageSets', 'Main',
-                                      self._image_set + '.txt')
+        image_set_file = os.path.join(self._data_path, 'ImageSets', 'Main', self._image_set + '.txt')
         assert os.path.exists(image_set_file), \
           'Path does not exist: {}'.format(image_set_file)
         with open(image_set_file) as f:
@@ -102,6 +101,7 @@ class aic(imdb):
 
     This function loads/saves from/to a cache file to speed up future calls.
     """
+        ### CACHEEEEEEEEEEEEEEEEEEEEEEEEEE ###
         cache_file = os.path.join(self.cache_path, self.name + '_gt_roidb.pkl')
         if os.path.exists(cache_file):
             with open(cache_file, 'rb') as fid:

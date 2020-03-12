@@ -110,6 +110,7 @@ def aic_eval(detpath,
         lines = f.readlines()
     imagenames = [x.strip() for x in lines]
 
+    ##### CACHEEEEEEEEEEEEEEEEEEEEEEEEEEEEE ###
     if not os.path.isfile(cachefile):
         # load annotations
         recs = {}
@@ -209,8 +210,6 @@ def aic_eval(detpath,
     # compute precision recall
     fp = np.cumsum(fp)
     tp = np.cumsum(tp)
-    print("tp: {}".format(tp))
-    print("npos: {}".format(npos))
     rec = tp / float(npos)
     # avoid divide by zero in case the first detection matches a difficult
     # ground truth

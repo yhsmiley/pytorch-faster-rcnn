@@ -39,7 +39,7 @@ case ${DATASET} in
 	aic)
 		TRAIN_IMDB="aic_trainval"
 		TEST_IMDB="aic_test"
-		ITERS=1000
+		ITERS=70000
 		ANCHORS="[8,16,32]"
 		RATIOS="[0.5,1,2]"
 		;;

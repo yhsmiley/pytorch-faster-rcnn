@@ -31,18 +31,17 @@ from nets.resnet_v1 import resnetv1
 
 import torch
 
-CLASSES = ('__background__', 'aeroplane', 'bicycle', 'bird', 'boat', 'bottle',
-           'bus', 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse',
-           'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train',
-           'tvmonitor')
+CLASSES = ('__background__', 'person', 'cellphone', 'computer', 'radar', 'palmtree')
 
 NETS = {
     'vgg16': ('vgg16_faster_rcnn_iter_%d.pth', ),
-    'res101': ('res101_faster_rcnn_iter_%d.pth', )
+    'res101': ('res101_faster_rcnn_iter_%d.pth', ),
+    'res50': ('res50_faster_rcnn_iter_%d.pth', )
 }
 DATASETS = {
     'pascal_voc': ('voc_2007_trainval', ),
-    'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval', )
+    'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval', ),
+    'aic': ('aic_trainval', )
 }
 
 
@@ -121,13 +120,13 @@ def parse_args():
     parser.add_argument(
         '--net',
         dest='demo_net',
-        help='Network to use [vgg16 res101]',
+        help='Network to use [vgg16 res101 res50]',
         choices=NETS.keys(),
         default='res101')
     parser.add_argument(
         '--dataset',
         dest='dataset',
-        help='Trained dataset [pascal_voc pascal_voc_0712]',
+        help='Trained dataset [pascal_voc pascal_voc_0712 aic]',
         choices=DATASETS.keys(),
         default='pascal_voc_0712')
     args = parser.parse_args()
@@ -144,7 +143,8 @@ if __name__ == '__main__':
     dataset = args.dataset
     saved_model = os.path.join(
         'output', demonet, DATASETS[dataset][0], 'default',
-        NETS[demonet][0] % (70000 if dataset == 'pascal_voc' else 110000))
+        NETS[demonet][0] % (70000 if dataset == 'pascal_voc' or 'aic' else 110000))
+        # NETS[demonet][0] % (45000 if dataset == 'aic' else 110000))
 
     if not os.path.isfile(saved_model):
         raise IOError(
@@ -156,9 +156,11 @@ if __name__ == '__main__':
         net = vgg16()
     elif demonet == 'res101':
         net = resnetv1(num_layers=101)
+    elif demonet == 'res50':
+        net = resnetv1(num_layers=50)
     else:
         raise NotImplementedError
-    net.create_architecture(21, tag='default', anchor_scales=[8, 16, 32])
+    net.create_architecture(len(CLASSES), tag='default', anchor_scales=[8, 16, 32])
 
     net.load_state_dict(
         torch.load(saved_model, map_location=lambda storage, loc: storage))
@@ -170,9 +172,9 @@ if __name__ == '__main__':
 
     print('Loaded network {:s}'.format(saved_model))
 
-    im_names = [
-        '000456.jpg', '000542.jpg', '001150.jpg', '001763.jpg', '004545.jpg'
-    ]
+    demo_dir = os.path.join(cfg.DATA_DIR, 'demo')
+    im_names = os.listdir(demo_dir)
+
     for im_name in im_names:
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         print('Demo for data/demo/{}'.format(im_name))
